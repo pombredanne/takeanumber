@@ -40,16 +40,14 @@ func (q *Queue) Add(body string, retries int) (string, error) {
 	return i.Id, nil
 }
 
-func (q *Queue) Reserve() (*Item, error) {
-	var i *Item
+func (q *Queue) Reserve() (Item, error) {
+	item := Item{}
 	found := false
-
 
 	for current := q.Items.Front(); current != nil; current = current.Next() {
 		if i, ok := current.Value.(Item); ok {
-			i = (Item)(i)
-
 			if !i.IsReserved() {
+				item = i
 				found = true
 				break
 			}
@@ -57,18 +55,16 @@ func (q *Queue) Reserve() (*Item, error) {
 	}
 
 	if !found {
-		return nil, &EmptyQueue{"No items available to reserve."}
+		return item, &EmptyQueue{"No items available to reserve."}
 	}
 
-	i.Reserve()
-	return i, nil
+	item.Reserve()
+	return item, nil
 }
 
 func (q *Queue) Done(id string) bool {
 	for current := q.Items.Front(); current != nil; current = current.Next() {
 		if i, ok := current.Value.(Item); ok {
-			// i = (Item)(i)
-
 			if i.Id == id {
 				q.Items.Remove(current)
 				return true
@@ -96,7 +92,6 @@ func (q *Queue) Len() int {
 }
 
 
-func NewQueue() *Queue {
-	// items := list.New{}
-	return &Queue{} //items}
+func NewQueue() Queue {
+	return Queue{}
 }

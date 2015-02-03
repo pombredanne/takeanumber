@@ -51,12 +51,12 @@ func (i *Item) Release() {
 }
 
 
-func NewItem(body string, retries int) (*Item, error) {
+func NewItem(body string, retries int) (Item, error) {
 	if len(strings.TrimSpace(body)) <= 0 {
-		return nil, &EmptyBody{"No body provided."}
+		return Item{}, &EmptyBody{"No body provided."}
 	}
 
 	id := uuid.New()
 	created := time.Now()
-	return &Item{id, body, retries, retries, false, created}, nil
+	return Item{id, body, retries, retries, false, created}, nil
 }
