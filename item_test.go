@@ -4,7 +4,7 @@ import "testing"
 
 func TestItem(t *testing.T) {
 	// Test initialization.
-	i, err := New("test", 2)
+	i, err := NewItem("test", 2)
 
 	if err != nil {
 		t.Error("Saw an error: ", err)

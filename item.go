@@ -51,7 +51,7 @@ func (i *Item) Release() {
 }
 
 
-func New(body string, retries int) (*Item, error) {
+func NewItem(body string, retries int) (*Item, error) {
 	if len(strings.TrimSpace(body)) <= 0 {
 		return nil, &EmptyBody{"No body provided."}
 	}
