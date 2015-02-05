@@ -1,18 +1,13 @@
-package takeanumber
+package item
 
 import (
 	"code.google.com/p/go-uuid/uuid"
+	"errors"
 	"strings"
 	"time"
 )
 
-type EmptyBody struct {
-	What string
-}
-
-func (err *EmptyBody) Error() string {
-	return err.What
-}
+var EmptyBody = errors.New("No body provided.")
 
 type Item struct {
 	Id               string
@@ -48,12 +43,12 @@ func (i *Item) Release() {
 	i.Reserved = false
 }
 
-func NewItem(body string, retries int) (Item, error) {
+func New(body string, retries int) (*Item, error) {
 	if len(strings.TrimSpace(body)) <= 0 {
-		return Item{}, &EmptyBody{"No body provided."}
+		return &Item{}, EmptyBody
 	}
 
 	id := uuid.New()
 	created := time.Now()
-	return Item{id, body, retries, retries, false, created}, nil
+	return &Item{id, body, retries, retries, false, created}, nil
 }
