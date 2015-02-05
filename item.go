@@ -1,11 +1,10 @@
 package takeanumber
 
 import (
+	"code.google.com/p/go-uuid/uuid"
 	"strings"
 	"time"
-	"code.google.com/p/go-uuid/uuid"
 )
-
 
 type EmptyBody struct {
 	What string
@@ -15,14 +14,13 @@ func (err *EmptyBody) Error() string {
 	return err.What
 }
 
-
 type Item struct {
-	Id string
-	Body string
-	InitialRetries int
+	Id               string
+	Body             string
+	InitialRetries   int
 	RemainingRetries int
-	Reserved bool
-	Created time.Time
+	Reserved         bool
+	Created          time.Time
 }
 
 func (i *Item) DecrRetries() bool {
@@ -49,7 +47,6 @@ func (i *Item) Reserve() {
 func (i *Item) Release() {
 	i.Reserved = false
 }
-
 
 func NewItem(body string, retries int) (Item, error) {
 	if len(strings.TrimSpace(body)) <= 0 {

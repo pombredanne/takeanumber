@@ -1,10 +1,9 @@
 package takeanumber
 
 import (
-	"fmt"
 	"container/list"
+	"fmt"
 )
-
 
 type EmptyQueue struct {
 	What string
@@ -14,16 +13,14 @@ func (err *EmptyQueue) Error() string {
 	return err.What
 }
 
-
 type UnknownElement struct {
-	What string
+	What  string
 	Value interface{}
 }
 
 func (err *UnknownElement) Error() string {
 	return fmt.Sprintf("%v: %v", err.What, err.Value)
 }
-
 
 type Queue struct {
 	Items list.List
@@ -90,7 +87,6 @@ func (q *Queue) Retry(i Item) bool {
 func (q *Queue) Len() int {
 	return q.Items.Len()
 }
-
 
 func NewQueue() Queue {
 	return Queue{}
