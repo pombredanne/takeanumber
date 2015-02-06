@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/toastdriven/takeanumber/item"
+	"sync"
 )
 
 var EmptyQueue = errors.New("No items available to reserve.")
@@ -19,6 +20,7 @@ func (err *UnknownElement) Error() string {
 
 type Queue struct {
 	Items []*item.Item
+	lock *sync.Mutex
 }
 
 func (q *Queue) Add(body string, retries int) (string, error) {
@@ -28,6 +30,9 @@ func (q *Queue) Add(body string, retries int) (string, error) {
 		return "", err
 	}
 
+	q.lock.Lock()
+	defer q.lock.Unlock()
+
 	q.Items = append(q.Items, i)
 	return i.Id, nil
 }
@@ -35,6 +40,9 @@ func (q *Queue) Add(body string, retries int) (string, error) {
 func (q *Queue) Reserve() (*item.Item, error) {
 	var i *item.Item
 	found := false
+
+	q.lock.Lock()
+	defer q.lock.Unlock()
 
 	for _, current := range q.Items {
 		if !current.IsReserved() {
@@ -53,6 +61,9 @@ func (q *Queue) Reserve() (*item.Item, error) {
 }
 
 func (q *Queue) Done(id string) bool {
+	q.lock.Lock()
+	defer q.lock.Unlock()
+
 	for offset, current := range q.Items {
 		if current.Id == id {
 			q.Items = append(q.Items[:offset], q.Items[offset+1:]...)
@@ -64,6 +75,9 @@ func (q *Queue) Done(id string) bool {
 }
 
 func (q *Queue) Retry(id string) bool {
+	q.lock.Lock()
+	defer q.lock.Unlock()
+
 	for offset, current := range q.Items {
 		if current.Id == id {
 			success := current.DecrRetries()
@@ -95,5 +109,6 @@ func (q *Queue) Len() int {
 
 func New() *Queue {
 	items := []*item.Item{}
-	return &Queue{items}
+	lock := &sync.Mutex{}
+	return &Queue{items, lock}
 }
