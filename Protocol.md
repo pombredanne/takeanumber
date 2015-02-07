@@ -27,7 +27,7 @@
 
 **Response:**
 
-    +OK\r\n
+    +<id>\r\n
     // ...or...
     -ERR <message>\r\n
 
@@ -35,7 +35,7 @@
 
     // Successful add
     C: ADD my_queue 3 {"thing": 1, "also": "abc"}\r\n
-    S: +OK\r\n
+    S: +0269073f-f624-4cf9-8c53-ab3d194137b3\r\n
 
     // Failed add
     C: ADD nopenopenope 1 \r\n
@@ -83,7 +83,7 @@
 
     // Out of retries
     C: RETRY my_queue 0269073f-f624-4cf9-8c53-ab3d194137b3\r\n
-    S: :0\r\n
+    S: -ERR No retries remaining.\r\n
 
 ## Done
 
