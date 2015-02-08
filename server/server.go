@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strconv"
 	"strings"
 	"github.com/toastdriven/takeanumber/queue"
 )
@@ -24,14 +25,14 @@ func (s *Server) GetQueue(name string) *queue.Queue {
 		return q
 	}
 
-	s.Queues[name] = &queue.New()
+	s.Queues[name] = queue.New()
 	return s.Queues[name]
 }
 
 func (s *Server) FormatResponse(resp interface{}) string {
 	var toFormat string
 
-	switch resp := resp.(type) {
+	switch resp.(type) {
 	case string:
 		toFormat = "+%s\r\n"
 	case int, int8, int16, int32, int64:
@@ -46,7 +47,7 @@ func (s *Server) FormatResponse(resp interface{}) string {
 }
 
 func (s *Server) HandleLen(command string) string {
-	bits := strings.Split(command)
+	bits := strings.SplitN(command, " ", 2)
 
 	if len(bits) != 2 {
 		return s.FormatResponse(errors.New("Missing LEN parameters."))
@@ -57,16 +58,16 @@ func (s *Server) HandleLen(command string) string {
 }
 
 func (s *Server) HandleAdd(command string) string {
-	bits := strings.Split(command)
+	bits := strings.SplitN(command, " ", 4)
 
 	if len(bits) != 4 {
 		return s.FormatResponse(errors.New("Missing ADD parameters."))
 	}
 
 	q := s.GetQueue(bits[1])
-	retries, ok := bits[2].(int)
+	retries, err := strconv.Atoi(bits[2])
 
-	if !ok {
+	if err != nil {
 		return s.FormatResponse(errors.New("Invalid number of retries."))
 	}
 
@@ -80,7 +81,7 @@ func (s *Server) HandleAdd(command string) string {
 }
 
 func (s *Server) HandleReserve(command string) string {
-	bits := strings.Split(command)
+	bits := strings.SplitN(command, " ", 2)
 
 	if len(bits) != 2 {
 		return s.FormatResponse(errors.New("Missing RESERVE parameters."))
@@ -98,7 +99,7 @@ func (s *Server) HandleReserve(command string) string {
 }
 
 func (s *Server) HandleRetry(command string) string {
-	bits := strings.Split(command)
+	bits := strings.SplitN(command, " ", 3)
 
 	if len(bits) != 3 {
 		return s.FormatResponse(errors.New("Missing RETRY parameters."))
@@ -116,7 +117,7 @@ func (s *Server) HandleRetry(command string) string {
 }
 
 func (s *Server) HandleDone(command string) string {
-	bits := strings.Split(command)
+	bits := strings.SplitN(command, " ", 3)
 
 	if len(bits) != 3 {
 		return s.FormatResponse(errors.New("Missing DONE parameters."))
@@ -134,38 +135,33 @@ func (s *Server) HandleDone(command string) string {
 }
 
 func (s *Server) Handle(c net.Conn) {
-	defer c.Close()
-
 	scanner := bufio.NewScanner(c)
-	scanner.Scan()
 
-	var resp string
-	command := strings.TrimSpace(scanner.Text())
+	for scanner.Scan() {
+		var resp string
+		command := strings.TrimSpace(scanner.Text())
 
-	switch {
-	case strings.HasPrefix(command, "LEN "):
-		resp = s.HandleLen(command)
-	case strings.HasPrefix(command, "ADD "):
-		resp = s.HandleAdd(command)
-	case strings.HasPrefix(command, "RESERVE "):
-		resp = s.HandleReserve(command)
-	case strings.HasPrefix(command, "RETRY "):
-		resp = s.HandleRetry(command)
-	case strings.HasPrefix(command, "DONE "):
-		resp = s.HandleDone(command)
-	default:
-		resp = s.FormatResponse(errors.New("Unrecognized command."))
+		switch {
+		case strings.HasPrefix(command, "LEN "):
+			resp = s.HandleLen(command)
+		case strings.HasPrefix(command, "ADD "):
+			resp = s.HandleAdd(command)
+		case strings.HasPrefix(command, "RESERVE "):
+			resp = s.HandleReserve(command)
+		case strings.HasPrefix(command, "RETRY "):
+			resp = s.HandleRetry(command)
+		case strings.HasPrefix(command, "DONE "):
+			resp = s.HandleDone(command)
+		case strings.HasPrefix(command, "CLOSE"):
+			c.Close()
+			return
+		default:
+			resp = s.FormatResponse(errors.New("Unrecognized command."))
+		}
+
+		respBytes := []byte(resp)
+		c.Write(respBytes)
 	}
-
-	respBytes, err := ByteSliceFromString(resp)
-
-	if err != nil {
-		// Manually format this one, because if it's an error here,
-		// things are sad.
-		respBytes = ByteSliceFromString("-ERR Fatal error occurred.\r\n")
-	}
-
-	c.Write(respBytes)
 }
 
 func (s *Server) Run() {
@@ -186,4 +182,9 @@ func (s *Server) Run() {
 
 		go s.Handle(conn)
 	}
+}
+
+func New(port int) *Server {
+	qs := map[string]*queue.Queue{}
+	return &Server{port, qs}
 }
