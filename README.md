@@ -8,5 +8,5 @@ Each process provides a single queue.
 
 Starting a server:
 
-    $ tan -h localhost -p 13131
+    $ tan -h localhost -p 13331
 
