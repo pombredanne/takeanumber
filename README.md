@@ -2,7 +2,8 @@
 
 A simplistic queue server written in Go.
 
-Each process provides a single queue.
+The server can host as many queues as needed. Simply refer to them by name to
+create them.
 
 ## Usage
 

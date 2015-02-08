@@ -1,3 +1,11 @@
+# takeanumber Protocol
+
+`takeanumber` uses a plain-text protocol when communicating over a TCP socket.
+This protocol tries to use Redis' [RESP](http://redis.io/topics/protocol) as
+its basis. Only a portion of this is implemented (strings, integers, errors).
+
+In the examples below, ``C: `` is the client talking, ``S: `` is the server.
+
 ## Length
 
 **Request:**
