@@ -114,3 +114,18 @@ In the examples below, ``C: `` is the client talking, ``S: `` is the server.
     // Non-existent ID
     C: DONE nopenopenope 0269073f-ffff-4444-8888-ab3d194137b3
     S: -ERR No such Id.\r\n
+
+
+## Close
+
+**Request:**
+
+    CLOSE\r\n
+
+**Response:**
+
+    No response, closed TCP connection
+
+**Example:**
+
+    C: CLOSE\r\n
