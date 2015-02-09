@@ -36,7 +36,6 @@ package queue
 
 import (
 	"errors"
-	"fmt"
 	"github.com/toastdriven/takeanumber/item"
 	"sync"
 )
