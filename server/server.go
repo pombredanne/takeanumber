@@ -7,24 +7,6 @@ Package server implements a TCP server that listens for queue commands.
 
 For a complete description of the available commands, responses & errors, see
 the included Protocol.md document that is included with `takeanumber`.
-
-Example:
-
-	import (
-		"fmt"
-		"github.com/toastdriven/takeanumber/server"
-	)
-
-	func main() {
-		port := 13331
-
-		// Create a Server.
-		s := server.New(port)
-
-		// Run the server.
-		s.Run()
-	}
-
 */
 package server
 

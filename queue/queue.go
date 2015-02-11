@@ -2,36 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-/*
-Package queue implements a simple FIFO queue.
-
-Example:
-
-	import (
-		"fmt"
-		"github.com/toastdriven/takeanumber/queue"
-	)
-
-	func Whatever() {
-		q := queue.New()
-		fmt.Println(q.Len())
-
-		// Add an item with zero retries.
-		id, err := q.Add("Hello, world!", 0)
-
-		// The id of the item is returned.
-		fmt.Println(id)
-		fmt.Println(q.Len())
-
-		// Fetch the topmost item from the queue.
-		item, err := q.Reserve()
-		fmt.Println(item.Body)
-
-		// Mark it as Done.
-		success := q.Done(item.Id)
-	}
-
-*/
+// Package queue implements a simple FIFO queue.
 package queue
 
 import (

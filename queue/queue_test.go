@@ -1,12 +1,13 @@
-package queue
+package queue_test
 
 import (
 	"testing"
+	"github.com/toastdriven/takeanumber/queue"
 )
 
 func TestQueue(t *testing.T) {
 	// Test initialization.
-	q := New()
+	q := queue.New()
 
 	if q.Len() != 0 {
 		t.Error("Queue length wasn't zeroed out, saw:", q.Len())

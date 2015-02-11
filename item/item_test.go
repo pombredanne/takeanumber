@@ -1,10 +1,13 @@
-package item
+package item_test
 
-import "testing"
+import (
+	"testing"
+	"github.com/toastdriven/takeanumber/item"
+)
 
 func TestItem(t *testing.T) {
 	// Test initialization.
-	i, err := New("test", 2)
+	i, err := item.New("test", 2)
 
 	if err != nil {
 		t.Error("Saw an error: ", err)

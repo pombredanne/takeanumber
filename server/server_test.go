@@ -1,15 +1,16 @@
-package server
+package server_test
 
 import (
 	"errors"
 	"fmt"
 	"strings"
 	"testing"
+	"github.com/toastdriven/takeanumber/server"
 )
 
 func TestServer(t *testing.T) {
 	// Test initialization.
-	s := New(13331)
+	s := server.New(13331)
 
 	port := s.NetPort()
 
