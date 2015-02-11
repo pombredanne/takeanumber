@@ -63,6 +63,7 @@ This session did the following:
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/toastdriven/takeanumber/server"
 )
@@ -70,11 +71,11 @@ import (
 const Version = "0.9.0"
 
 func main() {
-	port := 13331
+	var port int
+	flag.IntVar(&port, "p", 13331, "The port to listen on")
+	flag.Parse()
 
 	fmt.Printf("takeanumber v%v\n", Version)
-
-	// FIXME: This will need to accept command-line arguments.
 	s := server.New(port)
 
 	fmt.Printf("Listening on port %v\n", port)
