@@ -76,3 +76,10 @@ New BSD
 ## Benchmarks
 
 TBD
+
+
+## TODO
+
+* STATS command & statistics tracking
+* QUEUES command to return the queue names
+* Proper Go-based benchmarks
